@@ -1,0 +1,18 @@
+#!/bin/bash
+
+#Go into the source files directory 
+cd Source_Files
+
+#Compile the C++ code 
+echo "Compiling..."
+make 
+
+#Copy the executable C++ and python into /usr/local/bin
+cp Electron_Density_Difference_Map_Calculator EDDM_Calculator /usr/local/bin
+
+#Go up one directory to the original one
+cd ../
+
+echo "Done!"
+
+

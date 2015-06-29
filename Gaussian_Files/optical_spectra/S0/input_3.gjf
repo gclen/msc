@@ -1,0 +1,16 @@
+%chk=cisa.chk
+%mem=4GB
+%NProcShared=4
+#p HSEh1PBE/GEN PSEUDO=READ guess=read geom=allcheck SCRF=(Solvent=TetraHydroFuran) td(nstates=90) iop(9/40=2)
+
+V 0
+LANL2DZ
+****
+C H N O F 0
+6-31+G*
+****
+
+V 0
+LANL2DZ
+
+

@@ -1,0 +1,16 @@
+*.log
+*.cube
+*.fchk
+*.in
+*.pyc
+*.png
+*.tga
+*.svg
+*.aux
+*.pdf
+*.synctex.gz
+*.tex
+*.odp
+
+
+

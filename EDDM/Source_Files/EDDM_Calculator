@@ -1,0 +1,183 @@
+#!/usr/bin/python
+
+#Import the default dictionary
+from collections import defaultdict
+#Import the regular expressions module
+import re
+#Import the subprocess module for calling other commands
+import subprocess
+#Import the os module
+import os
+
+#Read in all of the orbital transitions for each transition along with their 
+#corresponding weight
+def get_Excited_states(TDDFT_input_file):
+
+    #Initialize a dictionary to hold the excited state information
+    excited_state_dict=defaultdict(list)
+
+    #Compile a regular expression for easy matching
+    arrow_match=re.compile('(->|<-)')
+    splitter_re=re.compile('[\s]->[\s]?|<-[\s]?|\s+')
+
+    #Read in the TDDFT file
+    TDDFT_input=open(TDDFT_input_file,'r')
+
+    #Find and read the excited states into a dictionary
+    for line in TDDFT_input:
+        #Find the lines with excited state 
+        if "Excited State" in line:
+            line_split=line.split()
+            #Get the state numbers and strip off the colon
+            state_num=line_split[2].strip(':')
+            continue
+
+        #If there is transition info then read it in
+        if arrow_match.search(line):
+        #if "<-" in line:   
+            #Split the line to get the transition info
+            #trans_split=line.split()
+            #Write a tuple containing the original orbital, final orbital 
+            #and max CI coefficient
+            trans_split=re.split(splitter_re,line)
+            trans_split=filter(None,trans_split) 
+            trans_info=(trans_split[0],trans_split[1],trans_split[2])
+            #Set a more descriptive label for the dictionary key
+            state="Excited_state_"+state_num
+            #Append tuple to the dictionary 
+            excited_state_dict[state].append(trans_info)
+        
+        #Otherwise skip the line
+        else:
+            continue
+    
+    return excited_state_dict
+
+#Generate the cube file given an orbital,its spin and the formatted checkpoint file 
+def generate_Cubefiles(orbnum,spin,fchkfile):
+    
+    cubefile_name=orbnum+spin+".cube"
+    #Check if the cubefile already exists and is not empty
+    if os.path.isfile(cubefile_name)==True and os.stat(cubefile_name).st_size!=0:
+        #If it does then don't make it again
+        pass
+    #If it does not then make the file 
+    else:
+        subprocess.call(['cubegen 0 %sMO=%s ../%s %s -3 h' % (spin,orbnum,fchkfile,cubefile_name)],shell=True)
+
+#Given the transition write an input file for the C++ code
+def write_Input_file(transition_info,EDDM_output_file):
+    
+    #Open up the input file for writing
+    EDDM_Input_File=open('EDDM_Input.in','w')
+
+    #Add the cube extension onto the file as well as the scratch dir location
+    init_cube_file=transition_info[0]+'.cube'
+    final_cube_file=transition_info[1]+'.cube'
+    transition_contribution=2*float(transition_info[2])**2
+
+    EDDM_Input_File.write(init_cube_file+'\n'+final_cube_file+'\n'+EDDM_output_file+'\n'+str(transition_contribution)+'\n') 
+
+    EDDM_Input_File.close()
+
+if __name__=="__main__":
+    
+    #Get the input file
+    TDDFT_input_file=raw_input('Please enter the name of the TD-DFT output file: ')
+    
+    #Get the formatted checkpoint file 
+    fchkfile=raw_input('Please enter the name of the formatted checkpoint file: ')
+
+    #Get the output file name
+    EDDM_output_file=raw_input('Please enter the name of your output cube file: ')
+    
+    #Get the desired transition
+    input_excited_state=raw_input('Please enter the transition you wish to calculate the EDDM for: ')
+    #Turn it into a key for the dictionary 
+    excited_state_key="Excited_state_"+input_excited_state
+    
+    #Print a newline for formatting if an input script is used 
+    print '\n'
+
+    #Read the TD-DFT info into a dictionary 
+    excited_states=get_Excited_states(TDDFT_input_file)
+    #Get the current working directory
+    cwd=os.getcwd()
+    #Create scratch directory if it does not exist  
+    if os.path.isdir(cwd+'/EDDM_Scratch')==False:
+        os.system('mkdir EDDM_Scratch')
+    #Change into the scratch directory 
+    os.chdir(cwd+'/EDDM_Scratch')
+
+    #Remove the previous output file if it exists since it will be read in by the EDDM code
+    try:
+        os.system(['rm %s ' % (EDDM_output_file)])
+    except:
+        pass
+
+    for transition in excited_states[excited_state_key]:
+        #Generate the cubefile for the initial orbital 
+        if transition[0][-1:]=='A' or transition[0][-1:]=='B':
+            init_orbital_number=transition[0][:-1]
+            init_spin_channel=transition[0][-1:]
+        else:
+            init_orbital_number=transition[0]
+            init_spin_channel=''
+        generate_Cubefiles(init_orbital_number,init_spin_channel,fchkfile)
+    
+        #Generate the cubefile for the final orbital 
+        if transition[1][-1:]=='A' or transition[1][-1:]=='B':
+            final_orbital_number=transition[1][:-1]
+            final_spin_channel=transition[1][-1:]
+        else:
+            final_orbital_number=transition[1]
+            final_spin_channel=''
+        generate_Cubefiles(final_orbital_number,final_spin_channel,fchkfile)
+
+    for transition in excited_states[excited_state_key]:
+        #Write the input file 
+        write_Input_file(transition,EDDM_output_file)
+        #Feed the input file into the C++ code
+        subprocess.call('/usr/local/bin/./Electron_Density_Difference_Map_Calculator < EDDM_Input.in',shell=True)
+    
+    #Copy the output file back up to the initial directory and cd back into it 
+    os.system('cp %s ../' % (EDDM_output_file))
+    #Clean up the scratch directory 
+    os.system('rm EDDM_Input.in %s' % (EDDM_output_file))
+    #Change the working directory back to the initial one
+    os.chdir(cwd)
+    
+
+    """
+    max_CI_coeff_list=[]
+
+    for transition in excited_states[excited_state_key]:
+        write_Input_file(transition,EDDM_output_file)
+        max_CI_coeff_list.append(float(transition[2]))
+    
+    print max_CI_coeff_list[:16]
+    print max_CI_coeff_list[16:]
+
+    excite_coeff_list=[]
+    for excite_coeff in max_CI_coeff_list[:16]:
+        excite_coeff_list.append(excite_coeff**2)
+    print excite_coeff_list
+
+    deexcite_coeff_list=[]
+    for deexcite_coeff in max_CI_coeff_list[16:]:
+        deexcite_coeff_list.append(deexcite_coeff**2)
+    print deexcite_coeff_list  
+
+    print sum(excite_coeff_list)-sum(deexcite_coeff_list)
+
+   
+    for coeff in max_CI_coeff_list:
+        contribution=2.0*(coeff**2)
+        contribution_list.append(contribution)
+    
+    print contribution_list
+    print sum(contribution_list)
+    """
+
+
+

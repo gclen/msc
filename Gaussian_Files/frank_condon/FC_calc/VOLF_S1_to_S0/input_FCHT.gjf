@@ -1,0 +1,11 @@
+%nprocshared=4
+%mem=4GB
+%chk=cisa_GS.chk
+#P Geom=AllCheck Frequency=(ReadFC,FCHT,SaveNM) NoSymm
+
+cisa_root1.chk
+
+
+
+
+

@@ -1,0 +1,14 @@
+Wrap C++ code using python
+Have one cube file that is continuously updated with the various transitions (EDDM_transnum.cube)
+Keep feeding cube files to c++ and updating EDDM file 
+Get user input for formatted checkpoint file and TDDFT output file
+Eventually add level of functionality to have a variable level npts
+Set up install script and make file 
+
+FIX TRANSITION CONTRIBUTION
+
+2*coefficient^2 gives contribution 
+not normalized for open shell systems 
+proper way to normalize?
+see email to Isaac
+Add solution to documentation
