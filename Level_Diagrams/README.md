@@ -113,5 +113,5 @@ Comparing the levels with their corresponding bubble diagrams shows good
 agreement. Of particular note, there is an area of minimal weight on Li
 in LUMO+3 which can be seen on the scaled line.
 
-<img src="Image_Files/Level_diagram_LiH.png" width="550" "Level diagram for LiH. Integration was done along the x-axis.">
+<img src="Image_Files/Level_diagram_LiH.png" width="550" alt="Level diagram for LiH. Integration was done along the x-axis.">
 
