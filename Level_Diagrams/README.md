@@ -56,7 +56,7 @@ affect the physics since the wavefunction is zero at the boundaries of
 the box.
 
 <figure>
-<img src="Image_Files/zero_padding_diagonal_vector.png" width="550">
+<img src="Image_Files/zero_padding_diagonal_vector.png" width="350">
 <figcaption> <br> Figure 1: Illustration of binning within the box. </figcaption>
 </figure>
 
