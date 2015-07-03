@@ -104,8 +104,9 @@ result.
 <br>
 <figure>
 <img src="Image_Files/Level_diagram_spheres_151.png" width="550">
-<figcaption> <br>Figure 4: Spheres at three points along the z-axis as a test case. The middle point contains more spheres which yields more weight. The corresponding level diagram is shown on the right. </figcaption>
+<figcaption> <br>Figure 4: Spheres at three points along the z-axis as a test case. The middle point contains more spheres which yields more weight. The corresponding level diagram is shown on the right. <br></figcaption>
 </figure>
+
 
 Lithium hydride (LiH) was also investigated as a test case. Fig.
 5 shows the level diagram where the integration
