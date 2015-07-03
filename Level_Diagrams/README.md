@@ -48,19 +48,22 @@ Additionally a counter keeps track of the number of elements contained
 in the bin. This is to normalize the total sum of each bin by dividing
 by the number of elements. However, this leads to over-representation of
 bins with a low number of elements. The circle closer to the corner in
-Fig. \[zero\_padding\_diagonal\] will have a larger weight since the
+Fig. 1 will have a larger weight since the
 number of elements in the bin is smaller. To rectify this problem, the
 box is padded with zeroes as shown in Fig.
-\[zero\_padding\_extended\_box\]. This extension of the box does not
+2. This extension of the box does not
 affect the physics since the wavefunction is zero at the boundaries of
 the box.
 
-![\[zero\_padding\_diagonal\] Illustration of binning within the
-box.](Image_Files/zero_padding_diagonal_vector.png)
+<figure>
+<img src="Image_Files/zero_padding_diagonal_vector.png" width="350">
+<figcaption> <br>Figure 1: Illustration of binning within the box. </figcaption>
+</figure>
 
-![\[zero\_padding\_extended\_box\] Illustration of padding the box with
-zeroes to avoid over
-representation.](Image_Files/zero_padding_extended_box.png)
+<figure>
+<img src="Image_Files/zero_padding_extended_box.png" width="350">
+<figcaption> <br>Figure 2: Illustration of padding the box with zeroes to avoid over representation. </figcaption>
+</figure>
 
 ### Implementation
 
@@ -87,26 +90,27 @@ dotted vertical lines.
 ### Test Cases
 
 To test the integration and scaling, cube files containing spheres were
-generated. Fig. \[spheres\_001\] shows three spheres placed
+generated. Fig. 3 shows three spheres placed
 equidistantly along the z-axis. The integration was done along the
 z-axis. As expected this level diagram contains three identical lines
-that are spaced appropriately. Similarly, Fig. \[spheres\_151\] shows
+that are spaced appropriately. Similarly, Fig. 4 shows
 three groups of spheres on the z-axis. The middle group contains five
 spheres, while the outer groups contain only one. Integrating along the
 z-axis yields more weight on the middle group which is the desired
 result.
 
-![\[spheres\_001\] Three equidistant spheres aligned on the z-axis as a
-test case. The corresponding level diagram is shown on the
-right.](Image_Files/Level_diagram_spheres_001.png)
+<figure>
+<img src="Image_Files/Level_diagram_spheres_001.png" width="350">
+<figcaption> <br>Figure 3: Three equidistant spheres aligned on the z-axis as a test case. The corresponding level diagram is shown on the right. </figcaption>
+</figure>
 
-![\[spheres\_151\] Spheres at three points along the z-axis as a test
-case. The middle point contains more spheres which yields more weight.
-The corresponding level diagram is shown on the
-right.](Image_Files/Level_diagram_spheres_151.png)
+<figure>
+<img src="Image_Files/Level_diagram_spheres_151.png" width="350">
+<figcaption> <br>Figure 4:  </figcaption>
+</figure>
 
 Lithium hydride (LiH) was also investigated as a test case. Fig.
-\[level\_diagram\_LiH\] shows the level diagram where the integration
+5 shows the level diagram where the integration
 was done along the x-axis. The vertical dashed lines indicate the edges
 of the box. Atomic positions are denoted by vertical dotted lines.
 Comparing the levels with their corresponding bubble diagrams shows good
@@ -115,5 +119,5 @@ in LUMO+3 which can be seen on the scaled line.
 
 <figure>
 <img src="Image_Files/Level_diagram_LiH.png" width="550">
-<figcaption> <br>Level diagram for LiH. Integration was done along the x-axis. </figcaption>
+<figcaption> <br>Figure 5: Level diagram for LiH. Integration was done along the x-axis. </figcaption>
 </figure>
