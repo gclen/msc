@@ -56,13 +56,13 @@ affect the physics since the wavefunction is zero at the boundaries of
 the box.
 
 <figure>
-<img src="Image_Files/zero_padding_diagonal_vector.png" width="450">
-<figcaption> <br>Figure 1: Illustration of binning within the box. </figcaption>
+<img src="Image_Files/zero_padding_diagonal_vector.png" width="550">
+<figcaption> <br> Figure 1: Illustration of binning within the box. </figcaption>
 </figure>
 
 <figure>
-<img src="Image_Files/zero_padding_extended_box.png" width="450">
-<figcaption> Figure 2: Illustration of padding the box with zeroes to avoid over representation. </figcaption>
+<img src="Image_Files/zero_padding_extended_box.png" width="550">
+<figcaption> <br> Figure 2: Illustration of padding the box with zeroes to avoid over representation. </figcaption>
 </figure>
 
 ### Implementation
