@@ -100,13 +100,13 @@ z-axis yields more weight on the middle group which is the desired
 result.
 
 <figure>
-<img src="Image_Files/Level_diagram_spheres_001.png" width="350">
+<img src="Image_Files/Level_diagram_spheres_001.png" width="450">
 <figcaption> <br>Figure 3: Three equidistant spheres aligned on the z-axis as a test case. The corresponding level diagram is shown on the right. </figcaption>
 </figure>
-
+<br>
 <figure>
-<img src="Image_Files/Level_diagram_spheres_151.png" width="350">
-<figcaption> <br>Figure 4:  </figcaption>
+<img src="Image_Files/Level_diagram_spheres_151.png" width="450">
+<figcaption> <br>Figure 4: Spheres at three points along the z-axis as a test case. The middle point contains more spheres which yields more weight. The corresponding level diagram is shown on the right. </figcaption>
 </figure>
 
 Lithium hydride (LiH) was also investigated as a test case. Fig.
