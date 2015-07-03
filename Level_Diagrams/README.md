@@ -62,7 +62,7 @@ the box.
 
 <figure>
 <img src="Image_Files/zero_padding_extended_box.png" width="350">
-<figcaption> <br>Figure 2: Illustration of padding the box with zeroes to avoid over representation. </figcaption>
+<figcaption> <Figure 2: Illustration of padding the box with zeroes to avoid over representation. </figcaption>
 </figure>
 
 ### Implementation
