@@ -114,24 +114,5 @@ agreement. Of particular note, there is an area of minimal weight on Li
 in LUMO+3 which can be seen on the scaled line.
 
 ![\[level\_diagram\_LiH\] Level diagram for LiH. Integration was done
-along the x-axis.](https://github.com/gclen/msc/tree/master/Level_Diagrams/Image_Files/Level_diagram_LiH.png)
+along the x-axis.](../Image_Files/Level_diagram_LiH.png)
 
-### Application to  {#Level_Diagram_VOLF_Section}
-
-Fig. \[level\_diagram\_VOLF\_zaxis\] shows a level diagram for ,
-integrating along the x-axis. Vertical dashed lines show the edges of
-the box, while the vertical dotted line shows the position of vanadium
-along the x axis. The energies of LUMO+2 and LUMO+3 have been shifted
-due to degeneracy. The first four unoccupied orbitals (LUMO,
-LUMO+1,+2,+3) have the bulk of their weight on the metal center.
-Consequently, their corresponding levels are condensed spatially. In
-contrast, LUMO+4 and LUMO+5 have much broader lines since most of the
-weight is on the ligands. LUMO+6 is a combination of the two effects
-with a dark center corresponding to the vanadium d orbitals and light
-edges representing the weight on the ligands. The two occupied orbitals
-shown (HOMO-1 and HOMO) have most of the weight on the ligands with
-minimal weight on the metal center. This figure was also discussed in
-Sec. \[VOLF\_XAS\_section\].
-
-![\[level\_diagram\_VOLF\_zaxis\] Level diagram for . Integration was
-done along the x-axis.](https://github.com/gclen/msc/tree/master/Level_Diagrams/Image_Files/Level_diagram_VOLF_zaxis.png)
