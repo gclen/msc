@@ -56,11 +56,11 @@ affect the physics since the wavefunction is zero at the boundaries of
 the box.
 
 ![\[zero\_padding\_diagonal\] Illustration of binning within the
-box.](https://github.com/gclen/msc/tree/master/Level_Diagrams/Image_Files/zero_padding_diagonal_vector.png)
+box.](Image_Files/zero_padding_diagonal_vector.png)
 
 ![\[zero\_padding\_extended\_box\] Illustration of padding the box with
 zeroes to avoid over
-representation.](https://github.com/gclen/msc/tree/master/Level_Diagrams/Image_Files/zero_padding_extended_box.png)
+representation.](Image_Files/zero_padding_extended_box.png)
 
 ### Implementation
 
@@ -98,12 +98,12 @@ result.
 
 ![\[spheres\_001\] Three equidistant spheres aligned on the z-axis as a
 test case. The corresponding level diagram is shown on the
-right.](https://github.com/gclen/msc/tree/master/Level_Diagrams/Image_Files/Level_diagram_spheres_001.png)
+right.](Image_Files/Level_diagram_spheres_001.png)
 
 ![\[spheres\_151\] Spheres at three points along the z-axis as a test
 case. The middle point contains more spheres which yields more weight.
 The corresponding level diagram is shown on the
-right.](https://github.com/gclen/msc/tree/master/Level_Diagrams/Image_Files/Level_diagram_spheres_151.png)
+right.](Image_Files/Level_diagram_spheres_151.png)
 
 Lithium hydride (LiH) was also investigated as a test case. Fig.
 \[level\_diagram\_LiH\] shows the level diagram where the integration
