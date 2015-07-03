@@ -26,9 +26,10 @@ int main()
     vector<double> wfn_data;
     vector<struct Bin_Struct> bin_data;
     vector<double> v;
-    vector<double> point1 {0.0,0.0,0.0};
-    vector<double> point2 {0.0,0.0,1.0};
+    vector<double> point1;
+    vector<double> point2;
     int num_bins;
+    double point_coord=0.0;
 
     //Get the name of the output file to search
     cout << "Please enter the name of the Gaussian output file: " << endl;
@@ -42,6 +43,21 @@ int main()
     //Get the number of virtual states required 
     cout << "Please enter the number of virtual states desired: " << endl;
     cin >> Tot_virt_orb;
+    //Get the coordinates of the first point
+    cout << "Please enter the coordinates of the first point separated by spaces (i.e x y z): ";  
+    for (int i=0; i<3; i++)
+    {
+        cin >> point_coord;    
+        point1.push_back(point_coord); 
+    }
+    //Get the coordinates of the second point
+    cout << "Please enter the coordinates of the second point separated by spaces (i.e x y z): ";
+    for (int i=0; i<3; i++)
+    {
+        cin >> point_coord;
+        point2.push_back(point_coord);
+    }
+
     //Get the number of bins
     cout << "Please input the desired number of bins" << endl;
     cin >> num_bins;
