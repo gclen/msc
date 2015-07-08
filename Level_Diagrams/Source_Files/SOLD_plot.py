@@ -83,6 +83,6 @@ plt.xticks(xticks_list,xticks_labels)
 
     
 
-#plt.show()
-plt.savefig('level_diagram_LiH.svg')
+plt.show()
+#plt.savefig('level_diagram_LiH.svg')
 
