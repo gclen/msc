@@ -9,6 +9,9 @@ from ase.data import atomic_names as names
 class Levels(gtk.Window):
 
     def __init__(self,gui):
+        #Set defaults
+        self.scaling_method = 'global'
+        
         #Set up window
         gtk.Window.__init__(self)
         self.set_title('Level Diagrams')
@@ -16,8 +19,6 @@ class Levels(gtk.Window):
         vbox = gtk.VBox()
         vbox.set_border_width(5)
        
-        test_num=0
-
         #Button to select G09 log file
         a = pack(vbox, gtk.Label())
         a = pack(vbox, gtk.Button(_('Choose Gaussian output file')))
@@ -45,20 +46,39 @@ class Levels(gtk.Window):
         pack(vbox, [gtk.Label(_('Number of unoccupied states desired')),
                     self.virt_spinner])
         self.virt_scale.connect('value-changed', self.scale_virt_orb) 
+
+        #Dial to set number of bins
+        self.bin_scale = gtk.Adjustment(value=100, lower=0, upper=500, step_incr=1)
+        self.bin_spinner = gtk.SpinButton(self.bin_scale, climb_rate=5, digits= 0)
+        self.bin_spinner.set_update_policy(gtk.UPDATE_IF_VALID)
+        self.bin_spinner.set_numeric(True)
+        pack(vbox, [gtk.Label(_('Number of bins')),
+                    self.bin_spinner])
+        self.bin_scale.connect('value-changed', self.scale_bin_num) 
+
         #Button to select atoms
         a = pack(vbox, gtk.Label())
         a = pack(vbox, gtk.Button(_('Select points')))
         a.connect('clicked', self.confirm_points)
 
+        #Button to set scaling
+        button = pack(vbox, gtk.RadioButton(None, "Global"))
+        button.connect("toggled", self.set_scaling_method, "global")
+        button.show()
+        
+        button = pack(vbox, gtk.RadioButton(button, "Orbital"))
+        button.connect("toggled", self.set_scaling_method, "orbital")
+        button.show()
+        
         # A close button
         pack(vbox, gtk.Label(_('\n')))
         close = pack(vbox, gtk.Button(_('Close')))
         close.connect('clicked', lambda widget: self.destroy())
 
-        #Button to select atoms
+        #Button to set all of the parameters
         a = pack(vbox, gtk.Label())
         a = pack(vbox, gtk.Button(_('Run')))
-        a.connect('clicked', self.run)
+        a.connect('clicked', self.set_parameters)
         
 
         # Add elements and show frame
@@ -74,8 +94,7 @@ class Levels(gtk.Window):
         self.nselected = n
 
         if n == 2: 
-            coords = self.gui.images.P[0][indices]
-            print coords
+            self.coords = self.gui.images.P[0][indices]
         else:
             points_error = gtk.MessageDialog(type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_NONE) 
             points_error.set_markup("Please select two points")
@@ -100,7 +119,7 @@ class Levels(gtk.Window):
 
         response = chooser.run()
         if response == gtk.RESPONSE_OK:
-            print chooser.get_filename(), 'selected'
+            self.fchk_file = chooser.get_filename()
         elif response == gtk.RESPONSE_CANCEL:
             print 'Closed, no files selected'
         chooser.destroy()     
@@ -124,16 +143,11 @@ class Levels(gtk.Window):
 
         response = chooser.run()
         if response == gtk.RESPONSE_OK:
-            print chooser.get_filename(), 'selected'
+            self.log_file = chooser.get_filename()
         elif response == gtk.RESPONSE_CANCEL:
             print 'Closed, no files selected'
         chooser.destroy()     
 
-    #Button to run the code
-    def run(self, button):
-        occ_num = self.occ_spinner.get_value_as_int()
-        virt_num = self.virt_spinner.get_value_as_int()
-        print occ_num, virt_num
 
     #Button to get desired number of occupied orbitals
     def scale_occ_orb(self, adjustment):
@@ -142,4 +156,38 @@ class Levels(gtk.Window):
     #Button to get desired number of virtual orbitals
     def scale_virt_orb(self, adjustment):
         return True
+
+    def scale_bin_num(self, adjustment):
+        return True
+    
+    def set_scaling_method(self, widget ,data='global'):
+        if data == 'orbital' and widget.get_active()==True:
+            self.scaling_method = 'orbital'
+        elif data == 'global' and widget.get_active() == True:
+            self.scaling_method = 'global'
+
+    #Button to run the code
+    def set_parameters(self, button):
+        self.write_config()   
+
+    def write_config(self):     
+        occ_num = str(self.occ_spinner.get_value_as_int())
+        virt_num = str(self.virt_spinner.get_value_as_int())
+        bin_num = str(self.bin_spinner.get_value_as_int())
+    
+        #Write out the parameters to a config file
+        config_file = open('levels_config.txt', 'w')
+            
+        config_file.write(self.log_file + '\n')
+        config_file.write(self.fchk_file + '\n')
+        config_file.write(occ_num + '\n')
+        config_file.write(virt_num + '\n')
+        
+        for i in range(len(self.coords)):
+            coord_string = str(self.coords[i][0]) + ' ' + str(self.coords[i][1]) + ' ' + str(self.coords[i][2]) 
+            config_file.write(coord_string + '\n')
+
+        config_file.write(bin_num + '\n')
+        config_file.write(self.scaling_method + '\n')
+
 
