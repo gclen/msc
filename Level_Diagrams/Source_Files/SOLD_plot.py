@@ -41,7 +41,7 @@ for i in range(len(scaled_list)):
         plt.scatter(scaled_list[i][1][j][0],scaled_list[i][0],color=str(scaled_list[i][1][j][1]))
 
 
-plt.xlabel("Distance along x [\AA]")
+plt.xlabel("Distance along v [\AA]")
 plt.ylabel(r"Energy [eV]")
 
 #Set the xtics range
