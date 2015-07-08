@@ -66,8 +66,9 @@ class Levels(gtk.Window):
 
         #Button to select atoms
         a = pack(vbox, gtk.Label())
-        a = pack(vbox, gtk.Button(_('Confirm points')))
-        a.connect('clicked', self.confirm_points)
+        a, b = pack(vbox, [gtk.Label(_('Select two points and click Confirm')), 
+                           gtk.Button(_('Confirm'))])
+        b.connect('clicked', self.confirm_points)
 
         #Button to set scaling
         a = pack(vbox, gtk.Label('Scaling method'))
@@ -78,11 +79,6 @@ class Levels(gtk.Window):
         button = pack(vbox, gtk.RadioButton(button, "Orbital"))
         button.connect("toggled", self.set_scaling_method, "orbital")
         button.show()
-        
-        # A close button
-        pack(vbox, gtk.Label(_('\n')))
-        close = pack(vbox, gtk.Button(_('Close')))
-        close.connect('clicked', lambda widget: self.destroy())
 
         #Button to set all of the parameters
         a = pack(vbox, gtk.Label())
