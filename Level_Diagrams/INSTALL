@@ -1,0 +1,28 @@
+--------------------------------
+Dependencies
+--------------------------------
+
+SOLD requires the following:
+
+-- matplotlib (sudo apt-get install python-matplotlib)
+-- numpy (sudo apt-get install python-numpy)
+-- Atomic simulation environment (installation instructions below)
+
+--------------------------------
+ASE installation instructions
+--------------------------------
+
+To install the atomic simulation environment, run the following
+
+    sudo bash -c 'echo "deb http://download.opensuse.org/repositories/home:/dtufys/xUbuntu_14.04 /" > /etc/apt/sources.list.d/home_dtufys.sources.list'
+    wget http://download.opensuse.org/repositories/home:/dtufys/xUbuntu_14.04/Release.key && sudo apt-key add Release.key && rm Release.key
+    sudo apt-get update
+    sudo apt-get -y install python-ase
+
+--------------------------------
+Installing SOLD
+--------------------------------
+
+After installing the dependencies, just run sudo ./SETUP.sh in this directory
+
+
