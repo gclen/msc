@@ -32,26 +32,20 @@ int main()
     double point_coord=0.0;
 
     //Get the name of the output file to search
-    cout << "Please enter the name of the Gaussian output file: " << endl;
     cin >> log_name;
     //Get the name of the formatted checkpoint file
-    cout << "Please enter the name of the formatted checkpoint file: " << endl;
     cin >> fchk_file;
     //Get the number of occupied states required
-    cout << "Please enter the number of occupied states desired: " << endl;
     cin >> Tot_occ_orb;
     //Get the number of virtual states required 
-    cout << "Please enter the number of virtual states desired: " << endl;
     cin >> Tot_virt_orb;
     //Get the coordinates of the first point
-    cout << "Please enter the coordinates of the first point separated by spaces (i.e x y z): ";  
     for (int i=0; i<3; i++)
     {
         cin >> point_coord;    
         point1.push_back(point_coord); 
     }
     //Get the coordinates of the second point
-    cout << "Please enter the coordinates of the second point separated by spaces (i.e x y z): ";
     for (int i=0; i<3; i++)
     {
         cin >> point_coord;
@@ -59,10 +53,8 @@ int main()
     }
 
     //Get the number of bins
-    cout << "Please input the desired number of bins" << endl;
     cin >> num_bins;
     //Get the method of scaling 
-    cout << "Please enter the desired method of scaling (global or orbital)" << endl;
     cin >> scaling_method; 
 
     //Remove the previous output files
