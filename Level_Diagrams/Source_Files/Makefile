@@ -1,5 +1,5 @@
 all: 
-	g++ -std=c++11 *.cpp -o Level_Diagrams
+	g++ -std=c++11 *.cpp -o SOLD
 
  
 
