@@ -86,7 +86,7 @@ class Levels(gtk.Window):
         #Button to set all of the parameters
         a = pack(vbox, gtk.Label())
         a = pack(vbox, gtk.Button(_('Run')))
-        a.connect('clicked', self.set_parameters)
+        a.connect('clicked', self.run_SOLD)
         
 
         # Add elements and show frame
@@ -183,7 +183,7 @@ class Levels(gtk.Window):
             self.scaling_method = 'global'
 
     #Button to run the code
-    def set_parameters(self, button):
+    def run_SOLD(self, button):
         #Check that all parameters have been set
         if self.log_file == None:
             points_error = gtk.MessageDialog(type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_NONE) 
@@ -198,9 +198,12 @@ class Levels(gtk.Window):
             points_error.set_markup("Please select two atoms to use as points")
             points_error.run()            
         
-        #Write config
+        #Write config and run code
         else:
-            self.write_config()   
+            self.write_config()
+            os.system('SOLD < levels_config.txt')
+            os.system('SOLD_plot.py')
+
 
     def write_config(self):     
         occ_num = str(self.occ_spinner.get_value_as_int())
