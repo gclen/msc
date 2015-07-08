@@ -10,6 +10,9 @@ class Levels(gtk.Window):
 
     def __init__(self,gui):
         #Set defaults
+        self.log_file = None
+        self.fchk_file = None
+        self.coords = None
         self.scaling_method = 'global'
         
         #Set up window
@@ -21,7 +24,7 @@ class Levels(gtk.Window):
        
         #Button to select G09 log file
         a = pack(vbox, gtk.Label())
-        self.log_entry_box, b = pack(vbox, [gtk.Entry(max=50), gtk.Button(_('Choose Gaussian output file'))])
+        self.log_entry_box, b = pack(vbox, [gtk.Entry(max=25), gtk.Button(_('Choose Gaussian output file'))])
         self.log_entry_box.set_max_length(0)
         self.log_entry_box.connect('activate',self.log_entry)
         b.connect('clicked', self.choose_log_file)
@@ -29,7 +32,7 @@ class Levels(gtk.Window):
 
         #Button to select fchk file
         a = pack(vbox, gtk.Label())
-        self.fchk_entry_box, b = pack(vbox, [gtk.Entry(max=50), gtk.Button(_('Choose fchk file'))])
+        self.fchk_entry_box, b = pack(vbox, [gtk.Entry(max=25), gtk.Button(_('Choose fchk file'))])
         self.fchk_entry_box.set_max_length(0)
         self.fchk_entry_box.connect('activate',self.log_entry)
         b.connect('clicked', self.choose_fchk_file)
@@ -63,10 +66,11 @@ class Levels(gtk.Window):
 
         #Button to select atoms
         a = pack(vbox, gtk.Label())
-        a = pack(vbox, gtk.Button(_('Select points')))
+        a = pack(vbox, gtk.Button(_('Confirm points')))
         a.connect('clicked', self.confirm_points)
 
         #Button to set scaling
+        a = pack(vbox, gtk.Label('Scaling method'))
         button = pack(vbox, gtk.RadioButton(None, "Global"))
         button.connect("toggled", self.set_scaling_method, "global")
         button.show()
@@ -181,7 +185,23 @@ class Levels(gtk.Window):
 
     #Button to run the code
     def set_parameters(self, button):
-        self.write_config()   
+        #Check that all parameters have been set
+        if self.log_file == None:
+            points_error = gtk.MessageDialog(type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_NONE) 
+            points_error.set_markup("Please select a Gaussian output file and run again")
+            points_error.run()
+        if self.log_file == None:
+            points_error = gtk.MessageDialog(type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_NONE) 
+            points_error.set_markup("Please select a formatted checkpoint file and run again")
+            points_error.run()
+        if self.coords == None:
+            points_error = gtk.MessageDialog(type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_NONE) 
+            points_error.set_markup("Please select two atoms to use as points")
+            points_error.run()            
+        
+        #Write config
+        else:
+            self.write_config()   
 
     def write_config(self):     
         occ_num = str(self.occ_spinner.get_value_as_int())
