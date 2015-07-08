@@ -186,13 +186,13 @@ class Levels(gtk.Window):
     def run_SOLD(self, button):
         #Check that all parameters have been set
         if self.log_file == None:
-            points_error = gtk.MessageDialog(type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_NONE) 
-            points_error.set_markup("Please select a Gaussian output file and run again")
-            points_error.run()
-        if self.log_file == None:
-            points_error = gtk.MessageDialog(type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_NONE) 
-            points_error.set_markup("Please select a formatted checkpoint file and run again")
-            points_error.run()
+            log_error = gtk.MessageDialog(type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_NONE) 
+            log_error.set_markup("Please select a Gaussian output file and run again")
+            log_error.run()
+        if self.fchk_file == None:
+            fchk_error = gtk.MessageDialog(type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_NONE) 
+            fchk_error.set_markup("Please select a formatted checkpoint file and run again")
+            fchk_error.run()
         if self.coords == None:
             points_error = gtk.MessageDialog(type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_NONE) 
             points_error.set_markup("Please select two atoms to use as points")
@@ -201,7 +201,7 @@ class Levels(gtk.Window):
         #Write config and run code
         else:
             self.write_config()
-            os.system('SOLD < levels_config.txt')
+            os.system('SOLD < levels_config.txt')     
             os.system('SOLD_plot.py')
 
 
