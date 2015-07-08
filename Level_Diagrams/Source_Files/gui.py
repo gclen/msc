@@ -357,7 +357,7 @@ class GUI(View, Status):
             ('Scaling', None, _('Scale system'), None,
              _("Deform system by scaling it"),
              self.scaling_window),
-            ('LevelDiagrams', None, _('Level _Diagrams'), None,
+            ('LevelDiagrams', None, _('SOLD'), None,
              '',self.levels),            
             ('About', None, _('_About'), None,
              None,
