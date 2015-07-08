@@ -21,14 +21,17 @@ class Levels(gtk.Window):
         self.gui = gui
         vbox = gtk.VBox()
         vbox.set_border_width(5)
-       
+        #self.table = gtk.Table(rows=10, columns=2, homogeneous=False)
+        #pack(vbox, self.table) 
+
         #Button to select G09 log file
         a = pack(vbox, gtk.Label())
         self.log_entry_box, b = pack(vbox, [gtk.Entry(max=25), gtk.Button(_('Choose Gaussian output file'))])
         self.log_entry_box.set_max_length(0)
         self.log_entry_box.connect('activate',self.log_entry)
         b.connect('clicked', self.choose_log_file)
-
+        #self.table.attach(self.log_entry_box, 0, 0)
+        #self.table.attach(b, 0, 1)
 
         #Button to select fchk file
         a = pack(vbox, gtk.Label())
@@ -42,7 +45,7 @@ class Levels(gtk.Window):
         self.occ_spinner = gtk.SpinButton(self.occ_scale, climb_rate=0, digits= 0)
         self.occ_spinner.set_update_policy(gtk.UPDATE_IF_VALID)
         self.occ_spinner.set_numeric(True)
-        pack(vbox, [gtk.Label(_('Number of occupied states desired')),
+        pack(vbox, [gtk.Label(_('Number of occupied states ')),
                     self.occ_spinner])
         self.occ_scale.connect('value-changed', self.scale_occ_orb) 
 
@@ -51,7 +54,7 @@ class Levels(gtk.Window):
         self.virt_spinner = gtk.SpinButton(self.virt_scale, climb_rate=0, digits= 0)
         self.virt_spinner.set_update_policy(gtk.UPDATE_IF_VALID)
         self.virt_spinner.set_numeric(True)
-        pack(vbox, [gtk.Label(_('Number of unoccupied states desired')),
+        pack(vbox, [gtk.Label(_('Number of unoccupied states ')),
                     self.virt_spinner])
         self.virt_scale.connect('value-changed', self.scale_virt_orb) 
 
@@ -60,7 +63,7 @@ class Levels(gtk.Window):
         self.bin_spinner = gtk.SpinButton(self.bin_scale, climb_rate=5, digits= 0)
         self.bin_spinner.set_update_policy(gtk.UPDATE_IF_VALID)
         self.bin_spinner.set_numeric(True)
-        pack(vbox, [gtk.Label(_('Number of bins')),
+        pack(vbox, [gtk.Label(_('Number of bins ')),
                     self.bin_spinner])
         self.bin_scale.connect('value-changed', self.scale_bin_num) 
 
