@@ -15,7 +15,8 @@ class Levels(gtk.Window):
         self.gui = gui
         vbox = gtk.VBox()
         vbox.set_border_width(5)
-        
+       
+        test_num=0
 
         #Button to select G09 log file
         a = pack(vbox, gtk.Label())
@@ -27,6 +28,23 @@ class Levels(gtk.Window):
         a = pack(vbox, gtk.Button(_('Choose fchk file')))
         a.connect('clicked', self.choose_fchk_file) 
 
+        #Dial to set number of occupied orbitals
+        self.occ_scale = gtk.Adjustment(value=2, lower=0, upper=100, step_incr=1)
+        self.occ_spinner = gtk.SpinButton(self.occ_scale, climb_rate=0, digits= 0)
+        self.occ_spinner.set_update_policy(gtk.UPDATE_IF_VALID)
+        self.occ_spinner.set_numeric(True)
+        pack(vbox, [gtk.Label(_('Number of occupied states desired')),
+                    self.occ_spinner])
+        self.occ_scale.connect('value-changed', self.scale_occ_orb) 
+
+        #Dial to set number of virtual orbitals
+        self.virt_scale = gtk.Adjustment(value=2, lower=0, upper=100, step_incr=1)
+        self.virt_spinner = gtk.SpinButton(self.virt_scale, climb_rate=0, digits= 0)
+        self.virt_spinner.set_update_policy(gtk.UPDATE_IF_VALID)
+        self.virt_spinner.set_numeric(True)
+        pack(vbox, [gtk.Label(_('Number of unoccupied states desired')),
+                    self.virt_spinner])
+        self.virt_scale.connect('value-changed', self.scale_virt_orb) 
         #Button to select atoms
         a = pack(vbox, gtk.Label())
         a = pack(vbox, gtk.Button(_('Select points')))
@@ -36,6 +54,12 @@ class Levels(gtk.Window):
         pack(vbox, gtk.Label(_('\n')))
         close = pack(vbox, gtk.Button(_('Close')))
         close.connect('clicked', lambda widget: self.destroy())
+
+        #Button to select atoms
+        a = pack(vbox, gtk.Label())
+        a = pack(vbox, gtk.Button(_('Run')))
+        a.connect('clicked', self.run)
+        
 
         # Add elements and show frame
         self.add(vbox)
@@ -57,8 +81,8 @@ class Levels(gtk.Window):
             points_error.set_markup("Please select two points")
             points_error.run()
 
+    #Button for getting fchk file
     def choose_fchk_file(self, button):
-        #Button to choose fchk file 
         chooser = gtk.FileChooserDialog(title=None,action=gtk.FILE_CHOOSER_ACTION_OPEN, 
                        buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OPEN,gtk.RESPONSE_OK))
         chooser.set_current_folder(os.getcwd())
@@ -81,8 +105,8 @@ class Levels(gtk.Window):
             print 'Closed, no files selected'
         chooser.destroy()     
 
+    #Button for getting gaussian output file
     def choose_log_file(self, button):
-        #Button to choose fchk file 
         chooser = gtk.FileChooserDialog(title=None,action=gtk.FILE_CHOOSER_ACTION_OPEN, 
                        buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OPEN,gtk.RESPONSE_OK))
         chooser.set_current_folder(os.getcwd())
@@ -104,3 +128,18 @@ class Levels(gtk.Window):
         elif response == gtk.RESPONSE_CANCEL:
             print 'Closed, no files selected'
         chooser.destroy()     
+
+    #Button to run the code
+    def run(self, button):
+        occ_num = self.occ_spinner.get_value_as_int()
+        virt_num = self.virt_spinner.get_value_as_int()
+        print occ_num, virt_num
+
+    #Button to get desired number of occupied orbitals
+    def scale_occ_orb(self, adjustment):
+        return True
+
+    #Button to get desired number of virtual orbitals
+    def scale_virt_orb(self, adjustment):
+        return True
+
