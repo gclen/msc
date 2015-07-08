@@ -21,13 +21,18 @@ class Levels(gtk.Window):
        
         #Button to select G09 log file
         a = pack(vbox, gtk.Label())
-        a = pack(vbox, gtk.Button(_('Choose Gaussian output file')))
-        a.connect('clicked', self.choose_log_file)
+        self.log_entry_box, b = pack(vbox, [gtk.Entry(max=50), gtk.Button(_('Choose Gaussian output file'))])
+        self.log_entry_box.set_max_length(0)
+        self.log_entry_box.connect('activate',self.log_entry)
+        b.connect('clicked', self.choose_log_file)
+
 
         #Button to select fchk file
         a = pack(vbox, gtk.Label())
-        a = pack(vbox, gtk.Button(_('Choose fchk file')))
-        a.connect('clicked', self.choose_fchk_file) 
+        self.fchk_entry_box, b = pack(vbox, [gtk.Entry(max=50), gtk.Button(_('Choose fchk file'))])
+        self.fchk_entry_box.set_max_length(0)
+        self.fchk_entry_box.connect('activate',self.log_entry)
+        b.connect('clicked', self.choose_fchk_file)
 
         #Dial to set number of occupied orbitals
         self.occ_scale = gtk.Adjustment(value=2, lower=0, upper=100, step_incr=1)
@@ -100,6 +105,12 @@ class Levels(gtk.Window):
             points_error.set_markup("Please select two points")
             points_error.run()
 
+    def log_entry(self, widget):
+        self.log_file = widget.get_text()   
+
+    def fchk_entry(self, widget):
+        self.fchk_file = widget.get_text()             
+
     #Button for getting fchk file
     def choose_fchk_file(self, button):
         chooser = gtk.FileChooserDialog(title=None,action=gtk.FILE_CHOOSER_ACTION_OPEN, 
@@ -120,6 +131,7 @@ class Levels(gtk.Window):
         response = chooser.run()
         if response == gtk.RESPONSE_OK:
             self.fchk_file = chooser.get_filename()
+            self.fchk_entry_box.set_text(self.fchk_file)
         elif response == gtk.RESPONSE_CANCEL:
             print 'Closed, no files selected'
         chooser.destroy()     
@@ -144,6 +156,7 @@ class Levels(gtk.Window):
         response = chooser.run()
         if response == gtk.RESPONSE_OK:
             self.log_file = chooser.get_filename()
+            self.log_entry_box.set_text(self.log_file)
         elif response == gtk.RESPONSE_CANCEL:
             print 'Closed, no files selected'
         chooser.destroy()     
