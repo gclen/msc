@@ -54,19 +54,29 @@ def write_gjf(coords_dict, solvent):
 
     input_file.write('\n')
 
-    if 'V' in coords_dict.keys():
-        input_file.write('V 0\nLANL2DZ\n****\n')
+    atom_pseudo_basis = ''
+    atom_pseudo_ecp = ''
+    atom_pseudo_list = ['V', 'I', 'Br']
+    
+    for atom in atom_pseudo_list:
+        if atom in coords_dict.keys():
+            atom_pseudo_basis += atom + ' '
+            atom_pseudo_ecp += atom + ' '
+
+    atom_pseudo_basis += '0\nLANL2DZ\n****\n'        
+    atom_pseudo_ecp += '0\nLANL2DZ\n\n\n\n'
+
+    input_file.write(atom_pseudo_basis)         
     
     atom_string=''
     for atom in coords_dict.keys():
-        if atom != 'V':
+        if atom not in atom_pseudo_list:
             atom_string+=atom+' '
     atom_string+='0\n6-31+G*\n****\n\n'
     
     input_file.write(atom_string)
 
-    if 'V' in coords_dict.keys():
-        input_file.write('V 0\nLANL2DZ\n')
+    input_file.write(atom_pseudo_ecp)
   
     input_file.write('\n\n\n\n')
 
