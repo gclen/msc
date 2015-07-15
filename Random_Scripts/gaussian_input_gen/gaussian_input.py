@@ -34,16 +34,25 @@ def get_coords(xyz_file):
     return coords_dict
 
 #Write out the gaussian input file
-def write_relax_gjf(coords_dict, solvent):
+def write_scf_gjf(coords_dict, solvent, input_file_name, atom_pseudo, 
+                  atom_pseudo_list, opt=False):
 
-    input_file = open('input.gjf', 'w')
+    input_file = open(input_file_name, 'w')
 
     resources = '%nprocshared=4\n%mem=4GB\n%chk=cisa.chk\n'
     
-    if solvent != 'Gas Phase':
-        route_section = '#p HSEh1PBE/GEN PSEUDO=READ opt SCRF=(Solvent=%s)\n' % (solvent)
+    if atom_pseudo == True:
+        route_section = '#p HSEh1PBE/GEN PSEUDO=READ'
     else:
-        route_section = '#p HSEh1PBE/GEN PSEUDO=READ opt \n'
+        route_section = '#p HSEh1PBE/6-31+G*'      
+
+    if opt == True:
+        route_section += ' opt'
+    
+    if (solvent != 'Gas Phase'):
+        route_section += ' SCRF=(Solvent=%s)' % (solvent)
+
+    route_section += '\n'
 
     #Write out file
     input_file.write(resources)
@@ -58,50 +67,111 @@ def write_relax_gjf(coords_dict, solvent):
 
     input_file.write('\n')
 
-    atom_pseudo_basis = ''
-    atom_pseudo_ecp = ''
+    if atom_pseudo == True:
+        atom_pseudo_basis = ''
+        atom_pseudo_ecp = ''    
+
+        for atom in atom_pseudo_list:
+            if atom in coords_dict.keys():
+                atom_pseudo_basis += atom + ' '
+                atom_pseudo_ecp += atom + ' '
+    
+        atom_pseudo_basis += '0\nLANL2DZ\n****\n'        
+        atom_pseudo_ecp += '0\nLANL2DZ\n\n\n\n'
+
+        input_file.write(atom_pseudo_basis)         
+    
+        atom_string=''
+        for atom in coords_dict.keys():
+            if atom not in atom_pseudo_list:
+                atom_string+=atom+' '
+        atom_string+='0\n6-31+G*\n****\n\n'
+    
+        input_file.write(atom_string)
+        input_file.write(atom_pseudo_ecp)
+    
+    input_file.write('\n\n\n\n')
+    
+    input_file.close()
+
+    return atom_pseudo
+
+def write_spectra_gjf(coords_dict, solvent, input_file_name, atom_pseudo, atom_pseudo_list,
+                      calc_label):
+
+    input_file = open(input_file_name, 'w')
+
+    resources = '%nprocshared=4\n%mem=4GB\n%chk=cisa.chk\n'
+
+    if atom_pseudo == True:
+        route_section = '#p HSEh1PBE/GEN PSEUDO=READ'
+    else:
+        route_section = '#p HSEh1PBE/6-31+G*'      
+    
+    if (solvent != 'Gas Phase'):
+        route_section += ' SCRF=(Solvent=%s)' % (solvent)
+    
+    if calc_label == 'pop':
+        route_section += ' guess=read geom=allcheck pop=full iop(3/33=1,3/36=-1) \n\n'  
+    elif calc_label == 'tddft':
+        route_section += ' guess=read geom=allcheck td(nstates=90) iop(9/40=2) iop(6/8=3) density=rhoci \n\n'                 
+
+    #Write out file
+    input_file.write(resources)
+    input_file.write(route_section)
+
+    if atom_pseudo == True:
+        atom_pseudo_basis = ''
+        atom_pseudo_ecp = ''    
+
+        for atom in atom_pseudo_list:
+            if atom in coords_dict.keys():
+                atom_pseudo_basis += atom + ' '
+                atom_pseudo_ecp += atom + ' '
+    
+        atom_pseudo_basis += '0\nLANL2DZ\n****\n'        
+        atom_pseudo_ecp += '0\nLANL2DZ\n\n\n\n'
+
+        input_file.write(atom_pseudo_basis)         
+    
+        atom_string=''
+        for atom in coords_dict.keys():
+            if atom not in atom_pseudo_list:
+                atom_string+=atom+' '
+        atom_string+='0\n6-31+G*\n****\n\n'
+    
+        input_file.write(atom_string)
+        input_file.write(atom_pseudo_ecp)
+    
+    input_file.write('\n\n\n\n')
+    
+    input_file.close()
+
+def write_gjf(coords_dict, solvent, type_calc):
+
+    #Boolean variable that denotes existence of atoms that require pseudopotentials
+    atom_pseudo = False
+
     atom_pseudo_list = ['Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn', 'Ga', 'Ge', 'As', 
                         'Se', 'Br', 'Kr', 'Rb', 'Sr', 'Y', 'Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd', 
                         'Ag', 'Cd', 'In', 'Sn', 'Sb', 'Te', 'I', 'Xe', 'Cs', 'Ba', 'La', 'Ce', 'Pr', 
                         'Nd', 'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu', 'Hf', 
                         'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt', 'Au', 'Hg', 'Tl', 'Pb', 'Bi', 'Po', 'At', 
                         'Rn', 'Fr', 'Ra', 'Ac', 'Th', 'Pa', 'U', 'Np', 'Pu', 'Am', 'Cm', 'Bk', 'Cf', 
-                        'Es', 'Fm', 'Md', 'No', 'Lr']
-    
-    #Set boolean variable that is only true if there are electrons with 
+                        'Es', 'Fm', 'Md', 'No', 'Lr'] 
 
+    #Check for atoms with d or f electrons
     for atom in atom_pseudo_list:
         if atom in coords_dict.keys():
-            atom_pseudo_basis += atom + ' '
-            atom_pseudo_ecp += atom + ' '
-
-    if atom_pseudo_basis != '':
-        atom_pseudo_basis += '0\nLANL2DZ\n****\n'        
-    if atom_pseudo_ecp != '':
-        atom_pseudo_ecp += '0\nLANL2DZ\n\n\n\n'
-
-    input_file.write(atom_pseudo_basis)         
-    
-    atom_string=''
-    for atom in coords_dict.keys():
-        if atom not in atom_pseudo_list:
-            atom_string+=atom+' '
-    atom_string+='0\n6-31+G*\n****\n\n'
-    
-    input_file.write(atom_string)
-
-    input_file.write(atom_pseudo_ecp)
-  
-    input_file.write('\n\n\n\n')
-
-    input_file.close()
-
-def write_gjf(coords_dict, solvent, type_calc):
+            atom_pseudo = True 
 
     if type_calc == "relax":
-        write_relax_gjf(coords_dict, solvent)
+        write_scf_gjf(coords_dict, solvent, 'input.gjf', atom_pseudo, atom_pseudo_list, opt=True)
     elif type_calc == "spectra":
-        pass
+        atom_pseudo = write_scf_gjf(coords_dict, solvent, 'input_1.gjf', 
+                                    atom_pseudo, atom_pseudo_list)
+        write_spectra_gjf(coords_dict, solvent, 'input_2.gjf', atom_pseudo, atom_pseudo_list, 'pop')
+        write_spectra_gjf(coords_dict, solvent, 'input_3.gjf', atom_pseudo, atom_pseudo_list, 'tddft')
 
 if __name__=="__main__":
 
@@ -139,5 +209,6 @@ if __name__=="__main__":
 
     write_gjf(coords_dict, args.solvent, type_calc)
      
-    
+    #Delete temp xyz file 
+    os.system('rm g09_input_temp.xyz')
 
