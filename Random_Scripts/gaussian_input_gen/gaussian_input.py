@@ -194,21 +194,25 @@ if __name__=="__main__":
 
     args = parser.parse_args()
 
+    #If the program is run with no arguments, display the help screen
+    if len(sys.argv) == 1:
+        parser.print_help()
+        sys.exit(1)
+
     #Get file extension if the file is specified 
     try: 
         filename, file_ext = os.path.splitext(args.input)
         if file_ext not in (".xyz", ".log", ".out"):
-            print "Invalid file type. File must be a xyz or G09 output file. "
-            sys.exit()
+            sys.exit("Invalid file type. File must be a xyz or G09 output file.")
 
     except AttributeError:
-        print "No file given as input. Enter a xyz or G09 output file."
+        sys.exit("No file given as input. Enter a xyz or G09 output file.")
 
     #Get the type of calculation
     try: 
         type_calc = args.type_calc.lower()
     except AttributeError: 
-        print "No calculation type specified."
+        sys.exit("No calculation type specified.")
 
     #Get coordinates
     if file_ext == ".xyz":
@@ -221,8 +225,7 @@ if __name__=="__main__":
             os.system("babel %s -o xyz g09_input_temp.xyz" % (args.input))
             xyz_file = "g09_input_temp.xyz"
         else:
-            print "Gaussian did not terminate properly. Aborting."
-            sys.exit()     
+            sys.exit("Gaussian did not terminate properly. Aborting.")     
 
     coords_dict = get_coords(xyz_file)
 
