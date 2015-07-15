@@ -33,6 +33,18 @@ def get_coords(xyz_file):
     #Return the dictionary
     return coords_dict
 
+def check_g09_termination(gaussian_log_file):
+    
+    norm_term = False
+
+    output_file = open(gaussian_log_file, 'r')
+
+    for line in output_file:
+        if "Normal termination of Gaussian 09" in line:
+            norm_term = True        
+
+    return norm_term        
+
 #Write out the gaussian input file
 def write_scf_gjf(coords_dict, solvent, input_file_name, atom_pseudo, 
                   atom_pseudo_list, opt=False):
@@ -202,8 +214,15 @@ if __name__=="__main__":
     if file_ext == ".xyz":
         xyz_file = args.input
     elif file_ext == (".log" or ".out"):
-        os.system("babel %s -o xyz g09_input_temp.xyz" % (args.input))
-        xyz_file = "g09_input_temp.xyz"
+        
+        norm_term = check_g09_termination(args.input)
+
+        if norm_term == True:
+            os.system("babel %s -o xyz g09_input_temp.xyz" % (args.input))
+            xyz_file = "g09_input_temp.xyz"
+        else:
+            print "Gaussian did not terminate properly. Aborting."
+            sys.exit()     
 
     coords_dict = get_coords(xyz_file)
 
