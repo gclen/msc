@@ -1,4 +1,4 @@
-random-scripts
+gaussian_input_gen
 ============
 
 Command line utility to generate Gaussian09 input files from xyz or gaussian output files. Requires python 2.7 and openbabel. To install openbabel on your local machine run 
