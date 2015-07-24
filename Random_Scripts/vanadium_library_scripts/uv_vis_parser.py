@@ -1,7 +1,9 @@
 #!/usr/bin/python
 
+import os
 import numpy as np
 import matplotlib.pyplot as plt
+import glob
 
 def parse_uv_file(uv_file_name):
     
@@ -22,12 +24,11 @@ def parse_uv_file(uv_file_name):
     #Sort the list in order of wavelength 
     uv_data.sort(key=lambda tup: tup[0])
 
-
     return uv_data
 
 def find_peak_position(uv_data):
 
-    slice_index = next(i for i, tup in enumerate(uv_data) if tup[0]>325)
+    slice_index = next(i for i, tup in enumerate(uv_data) if tup[0]>350)
     
     #Unpack uv_data into two lists
     wavelength, absorp = zip(*uv_data[slice_index:])
@@ -41,7 +42,9 @@ def find_peak_position(uv_data):
 
     return (peak_wavelength, peak_absorp)
 
-def plot_spectra(peak_point, uv_data):
+def plot_spectra(peak_point, uv_data, uv_file_name):
+
+    plot_file_name = os.path.splitext(uv_file_name)[0] + '.svg'
 
     peak_wavelength = peak_point[0]
     peak_absorp = peak_point[1]
@@ -51,7 +54,7 @@ def plot_spectra(peak_point, uv_data):
     plt.rc('text', usetex=True)
     plt.rc('font', family='serif')
 
-    plt.scatter(wavelength, absorp)
+    plt.scatter(wavelength, absorp, c='r', marker='.', linewidth=0.0)
     
     plt.hlines(peak_absorp, 250, peak_wavelength, linestyles='dotted')
     plt.vlines(peak_wavelength, 0, peak_absorp, linestyles='dotted')
@@ -61,17 +64,24 @@ def plot_spectra(peak_point, uv_data):
     #Reset yaxis
     ymin, ymax = plt.ylim()
     plt.ylim(0,ymax)
-    
 
-    plt.show()
+    plt.xlabel('Wavelength [nm]')
+    plt.ylabel('Absorptance [L/mol{$\cdot$}cm]')
+
+    plt.savefig(plot_file_name)
+
+    plt.close()
 
 if __name__=="__main__":
     
-    uv_file_name = 'VOLF_F_THF_uv_vis.txt'
+    for uv_file_name in glob.glob('*.txt'):
 
-    uv_data = parse_uv_file(uv_file_name)
+        uv_data = parse_uv_file(uv_file_name)
 
-    peak_point = find_peak_position(uv_data)
+        peak_point = find_peak_position(uv_data)
 
-    plot_spectra(peak_point, uv_data)
+        plot_spectra(peak_point, uv_data, uv_file_name)
+
+
+
 
