@@ -78,6 +78,19 @@ def find_ref_peak(ref_lig, ref_sol, peak_point_list):
     except UnboundLocalError:
         sys.exit("Reference ligand or solvent is not valid")
 
+def peak_percent_diff(peak, ref_wavelength, ref_abs):
+
+    wavelength_diff = ((peak[2]-ref_wavelength)/(ref_wavelength))*100.0
+    absorp_diff = ((peak[3]-ref_abs)/(ref_abs))*100.0
+    
+    #Change the label to Solvent-Ligand
+    if peak[1] == 'GasPhase':
+        peak_label = 'GP-'+peak[0]
+    else:
+        peak_label = peak[1]+'-'+peak[0]
+
+    return (peak_label, wavelength_diff, absorp_diff)
+
 def plot_spectra(peak_point, uv_data, uv_file_name):
 
     plot_file_name = os.path.splitext(uv_file_name)[0] + '.svg'
@@ -108,18 +121,53 @@ def plot_spectra(peak_point, uv_data, uv_file_name):
 
     plt.close()
 
+def plot_peak_diff(peak_diff_list):
+
+    wavelength_diff_list = []
+    abs_diff_list = []
+    peak_label_list = []
+    
+    #Split tuples into 3 different lists
+    for peak_tuple in peak_diff_list:
+        peak_label_list.append(peak_tuple[0])
+        wavelength_diff_list.append(peak_tuple[1])
+        abs_diff_list.append(peak_tuple[2])
+
+    plt.rc('text', usetex=True)
+    plt.rc('font', family='serif')
+
+    plt.xlabel('Peak wavelength difference [\%]')
+    plt.ylabel('Peak absorption difference [\%]')
+
+    plt.scatter(wavelength_diff_list, abs_diff_list, )
+
+    plt.show()
+
 if __name__=="__main__":
    
-
     peak_point_list = []
+    peak_diff_list = []
+    ref_lig = 'F'
+    ref_sol = 'THF'
 
     for uv_file_name in glob.glob('*.txt'):
 
-        uv_data = parse_uv_file(uv_file_name)
+        solvent = get_solvent(uv_file_name)    
+         
+        if solvent == ref_sol: 
+            uv_data = parse_uv_file(uv_file_name)
 
-        peak_point = find_peak_position(uv_data, uv_file_name)
+            peak_point = find_peak_position(uv_data, uv_file_name)
 
-        peak_point_list.append(peak_point)
+            peak_point_list.append(peak_point)
 
-    test_tup = find_ref_peak('F', 'THF', peak_point_list)
+    ref_wavelength, ref_abs = find_ref_peak(ref_lig, ref_sol, peak_point_list)
+
+    for peak in peak_point_list:
+        peak_diff = peak_percent_diff(peak, ref_wavelength, ref_abs)
+        peak_diff_list.append(peak_diff)    
+
+
+    plot_peak_diff(peak_diff_list)
+
 
