@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import os
+import sys
 import numpy as np
 import matplotlib.pyplot as plt
 import glob
@@ -26,7 +27,28 @@ def parse_uv_file(uv_file_name):
 
     return uv_data
 
-def find_peak_position(uv_data):
+def get_ligand(uv_file_name):
+
+    file_split = uv_file_name.split('_')
+
+    #Get the name of the ligand
+    lig = file_split[3]
+
+    return lig
+
+def get_solvent(uv_file_name):
+
+    file_split = uv_file_name.split('_')
+    
+    sol = (file_split[-1].split('.'))[0]
+
+    return sol
+
+def find_peak_position(uv_data, uv_file_name):
+
+    #Get ligand and solvent names
+    ligand = get_ligand(uv_file_name)
+    solvent = get_solvent(uv_file_name)
 
     slice_index = next(i for i, tup in enumerate(uv_data) if tup[0]>350)
     
@@ -40,7 +62,21 @@ def find_peak_position(uv_data):
     peak_wavelength = wavelength[peak_index]
     peak_absorp = absorp[peak_index]
 
-    return (peak_wavelength, peak_absorp)
+    return (ligand, solvent, peak_wavelength, peak_absorp)
+
+def find_ref_peak(ref_lig, ref_sol, peak_point_list):
+   
+    for peak in peak_point_list:
+
+        #If the ligand and solvent match then set the reference wavelengths and absorptions
+        if peak[0] == ref_lig and peak[1] == ref_sol:
+            ref_wavelength = peak[2]
+            ref_abs = peak[3]
+   
+    try:  
+        return (ref_wavelength, ref_abs)
+    except UnboundLocalError:
+        sys.exit("Reference ligand or solvent is not valid")
 
 def plot_spectra(peak_point, uv_data, uv_file_name):
 
@@ -73,15 +109,17 @@ def plot_spectra(peak_point, uv_data, uv_file_name):
     plt.close()
 
 if __name__=="__main__":
-    
+   
+
+    peak_point_list = []
+
     for uv_file_name in glob.glob('*.txt'):
 
         uv_data = parse_uv_file(uv_file_name)
 
-        peak_point = find_peak_position(uv_data)
+        peak_point = find_peak_position(uv_data, uv_file_name)
 
-        plot_spectra(peak_point, uv_data, uv_file_name)
+        peak_point_list.append(peak_point)
 
-
-
+    test_tup = find_ref_peak('F', 'THF', peak_point_list)
 
