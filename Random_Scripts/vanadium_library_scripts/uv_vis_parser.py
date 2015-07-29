@@ -64,19 +64,17 @@ def find_peak_position(uv_data, uv_file_name):
 
     return (ligand, solvent, peak_wavelength, peak_absorp)
 
-def find_ref_peak(ref_lig, ref_sol, peak_point_list):
-   
-    for peak in peak_point_list:
+def find_ref_peak(peak_point_list):
+    
+    #Separate the tuples in to lists
+    lig_list, sol_list, peak_wavelength_list, peak_absorp_list = zip(*peak_point_list)
 
-        #If the ligand and solvent match then set the reference wavelengths and absorptions
-        if peak[0] == ref_lig and peak[1] == ref_sol:
-            ref_wavelength = peak[2]
-            ref_abs = peak[3]
-   
-    try:  
-        return (ref_wavelength, ref_abs)
-    except UnboundLocalError:
-        sys.exit("Reference ligand or solvent is not valid")
+    #Find the median wavelength
+    med =  np.median(peak_wavelength_list)
+    #Get the index of the median wavelength
+    i = (np.abs(peak_wavelength_list - med)).argmin()
+    
+    return (lig_list[i], sol_list[i], peak_wavelength_list[i], peak_absorp_list[i])
 
 def peak_percent_diff(peak, ref_wavelength, ref_abs):
 
@@ -147,27 +145,27 @@ if __name__=="__main__":
    
     peak_point_list = []
     peak_diff_list = []
-    ref_lig = 'F'
-    ref_sol = 'THF'
+    input_sol = 'THF'
 
     for uv_file_name in glob.glob('*.txt'):
 
         solvent = get_solvent(uv_file_name)    
          
-        if solvent == ref_sol: 
+        if solvent == input_sol: 
             uv_data = parse_uv_file(uv_file_name)
 
             peak_point = find_peak_position(uv_data, uv_file_name)
 
             peak_point_list.append(peak_point)
 
-    ref_wavelength, ref_abs = find_ref_peak(ref_lig, ref_sol, peak_point_list)
+    ref_lig, ref_sol, ref_wavelength, ref_abs = find_ref_peak(peak_point_list)
 
+    
     for peak in peak_point_list:
         peak_diff = peak_percent_diff(peak, ref_wavelength, ref_abs)
         peak_diff_list.append(peak_diff)    
 
 
     plot_peak_diff(peak_diff_list)
-
+    
 
