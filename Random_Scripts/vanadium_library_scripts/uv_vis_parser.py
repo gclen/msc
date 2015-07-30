@@ -59,7 +59,9 @@ def find_peak_position(uv_data, uv_file_name):
     for i in max_indices[0]:
         idx = int(i)
         
-        if wavelength[idx]>350:
+        #Only want local maxima with wavelengths > 380 nm
+        #380 nm and above corresponds to 90% of the solar spectrum
+        if wavelength[idx]>380:
             peak_wavelength = wavelength[idx]
             peak_absorp = absorp[idx]
 
@@ -157,16 +159,16 @@ if __name__=="__main__":
             peak_point = find_peak_position(uv_data, uv_file_name)
 
             peak_point_list.append(peak_point)
-
+            plot_spectra(peak_point, uv_data, uv_file_name)
 
     ref_lig, ref_sol, ref_wavelength, ref_abs = find_ref_peak(peak_point_list)
 
-    
+    """    
     for peak in peak_point_list:
         peak_diff = peak_percent_diff(peak, ref_wavelength, ref_abs)
         peak_diff_list.append(peak_diff)    
 
 
     plot_peak_diff(peak_diff_list)
-    
+    """      
 
