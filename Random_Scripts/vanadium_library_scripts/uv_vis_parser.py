@@ -128,12 +128,6 @@ def plot_peak_diff(peak_diff_list):
     wavelength_diff_list = list(wavelength_diff_list)
     abs_diff_list = list(abs_diff_list)
 
-    for i, j in enumerate(peak_label_list):
-        if j == 'THF-NO2':
-            peak_label_list.pop(i)
-            wavelength_diff_list.pop(i)
-            abs_diff_list.pop(i)
-
     plt.rc('text', usetex=True)
     plt.rc('font', family='serif')
 
@@ -164,18 +158,15 @@ if __name__=="__main__":
 
             peak_point_list.append(peak_point)
 
-            plot_spectra(peak_point, uv_data, uv_file_name)
 
     ref_lig, ref_sol, ref_wavelength, ref_abs = find_ref_peak(peak_point_list)
 
     
-
-    """
     for peak in peak_point_list:
         peak_diff = peak_percent_diff(peak, ref_wavelength, ref_abs)
         peak_diff_list.append(peak_diff)    
 
 
     plot_peak_diff(peak_diff_list)
-    """
+    
 
