@@ -35,6 +35,9 @@ def get_ligand(uv_file_name):
     #Get the name of the ligand
     lig = file_split[3]
 
+    if lig == '343' or lig == '435':
+        lig = file_split[4]
+
     return lig
 
 def get_solvent(uv_file_name):
@@ -136,7 +139,20 @@ def plot_peak_diff(peak_diff_list):
     plt.xlabel('Peak wavelength difference [\%]')
     plt.ylabel('Peak absorption difference [\%]')
 
+    plt.xscale('symlog')
+    plt.yscale('symlog')
+
     plt.scatter(wavelength_diff_list, abs_diff_list, )
+
+    xmin, xmax = plt.xlim()
+    ymin, ymax = plt.ylim()
+    
+    plt.hlines(0,xmin , xmax , linestyles='dotted')
+    plt.vlines(0, ymin, ymax, linestyles='dotted')    
+
+    #Reset axes
+    plt.xlim(xmin, xmax)
+    plt.ylim(ymin, ymax)
 
     for i, label in enumerate(peak_label_list):
         plt.annotate(label, (wavelength_diff_list[i],abs_diff_list[i]))
@@ -147,28 +163,28 @@ if __name__=="__main__":
    
     peak_point_list = []
     peak_diff_list = []
-    input_sol = 'THF'
+    input_sol = ['GasPhase']
 
     for uv_file_name in glob.glob('*.txt'):
 
         solvent = get_solvent(uv_file_name)    
          
-        if solvent == input_sol: 
+        if solvent in input_sol: 
             uv_data = parse_uv_file(uv_file_name)
 
             peak_point = find_peak_position(uv_data, uv_file_name)
-
             peak_point_list.append(peak_point)
-            plot_spectra(peak_point, uv_data, uv_file_name)
-
+            #plot_spectra(peak_point, uv_data, uv_file_name)
+    
+    
     ref_lig, ref_sol, ref_wavelength, ref_abs = find_ref_peak(peak_point_list)
 
-    """    
+        
     for peak in peak_point_list:
         peak_diff = peak_percent_diff(peak, ref_wavelength, ref_abs)
         peak_diff_list.append(peak_diff)    
 
 
     plot_peak_diff(peak_diff_list)
-    """      
+          
 
