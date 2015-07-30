@@ -3,6 +3,7 @@
 import os
 import sys
 import numpy as np
+from scipy.signal import argrelextrema
 import matplotlib.pyplot as plt
 import glob
 
@@ -49,18 +50,18 @@ def find_peak_position(uv_data, uv_file_name):
     #Get ligand and solvent names
     ligand = get_ligand(uv_file_name)
     solvent = get_solvent(uv_file_name)
-
-    slice_index = next(i for i, tup in enumerate(uv_data) if tup[0]>350)
     
     #Unpack uv_data into two lists
-    wavelength, absorp = zip(*uv_data[slice_index:])
-
-    #Find the index of the max absorption
-    max_absorp = max(absorp)
-    peak_index = next(i for i, j in enumerate(absorp) if j==max_absorp)
+    wavelength, absorp = zip(*uv_data)
     
-    peak_wavelength = wavelength[peak_index]
-    peak_absorp = absorp[peak_index]
+    max_indices = argrelextrema(np.asarray(absorp), np.greater)
+
+    for i in max_indices[0]:
+        idx = int(i)
+        
+        if wavelength[idx]>350:
+            peak_wavelength = wavelength[idx]
+            peak_absorp = absorp[idx]
 
     return (ligand, solvent, peak_wavelength, peak_absorp)
 
@@ -93,8 +94,8 @@ def plot_spectra(peak_point, uv_data, uv_file_name):
 
     plot_file_name = os.path.splitext(uv_file_name)[0] + '.svg'
 
-    peak_wavelength = peak_point[0]
-    peak_absorp = peak_point[1]
+    peak_wavelength = peak_point[2]
+    peak_absorp = peak_point[3]
     
     wavelength, absorp = zip(*uv_data)
 
@@ -121,15 +122,17 @@ def plot_spectra(peak_point, uv_data, uv_file_name):
 
 def plot_peak_diff(peak_diff_list):
 
-    wavelength_diff_list = []
-    abs_diff_list = []
-    peak_label_list = []
-    
-    #Split tuples into 3 different lists
-    for peak_tuple in peak_diff_list:
-        peak_label_list.append(peak_tuple[0])
-        wavelength_diff_list.append(peak_tuple[1])
-        abs_diff_list.append(peak_tuple[2])
+    peak_label_list, wavelength_diff_list, abs_diff_list = zip(*peak_diff_list)
+
+    peak_label_list = list(peak_label_list)
+    wavelength_diff_list = list(wavelength_diff_list)
+    abs_diff_list = list(abs_diff_list)
+
+    for i, j in enumerate(peak_label_list):
+        if j == 'THF-NO2':
+            peak_label_list.pop(i)
+            wavelength_diff_list.pop(i)
+            abs_diff_list.pop(i)
 
     plt.rc('text', usetex=True)
     plt.rc('font', family='serif')
@@ -138,6 +141,9 @@ def plot_peak_diff(peak_diff_list):
     plt.ylabel('Peak absorption difference [\%]')
 
     plt.scatter(wavelength_diff_list, abs_diff_list, )
+
+    for i, label in enumerate(peak_label_list):
+        plt.annotate(label, (wavelength_diff_list[i],abs_diff_list[i]))
 
     plt.show()
 
@@ -158,14 +164,18 @@ if __name__=="__main__":
 
             peak_point_list.append(peak_point)
 
+            plot_spectra(peak_point, uv_data, uv_file_name)
+
     ref_lig, ref_sol, ref_wavelength, ref_abs = find_ref_peak(peak_point_list)
 
     
+
+    """
     for peak in peak_point_list:
         peak_diff = peak_percent_diff(peak, ref_wavelength, ref_abs)
         peak_diff_list.append(peak_diff)    
 
 
     plot_peak_diff(peak_diff_list)
-    
+    """
 
