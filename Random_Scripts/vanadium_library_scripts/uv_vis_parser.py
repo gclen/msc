@@ -70,16 +70,21 @@ def find_peak_position(uv_data, uv_file_name):
 
     return (ligand, solvent, peak_wavelength, peak_absorp)
 
-def find_ref_peak(peak_point_list):
+def find_ref_peak(peak_point_list, ref_lig = None):
     
     #Separate the tuples in to lists
     lig_list, sol_list, peak_wavelength_list, peak_absorp_list = zip(*peak_point_list)
-
-    #Find the median wavelength
-    med =  np.median(peak_wavelength_list)
-    #Get the index of the median wavelength
-    i = (np.abs(peak_wavelength_list - med)).argmin()
     
+    if ref_lig == None:
+        #Find the median wavelength
+        med =  np.median(peak_wavelength_list)
+        #Get the index of the median wavelength
+        i = (np.abs(peak_wavelength_list - med)).argmin()
+    else:
+        for idx, lig in enumerate(lig_list):
+            if lig == ref_lig:
+                i = idx
+
     return (lig_list[i], sol_list[i], peak_wavelength_list[i], peak_absorp_list[i])
 
 def peak_percent_diff(peak, ref_wavelength, ref_abs):
@@ -177,7 +182,7 @@ if __name__=="__main__":
             #plot_spectra(peak_point, uv_data, uv_file_name)
     
     
-    ref_lig, ref_sol, ref_wavelength, ref_abs = find_ref_peak(peak_point_list)
+    ref_lig, ref_sol, ref_wavelength, ref_abs = find_ref_peak(peak_point_list, 'Br')
 
         
     for peak in peak_point_list:
